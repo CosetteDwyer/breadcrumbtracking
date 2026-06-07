@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { generateText, Output } from "ai";
+import { generateText } from "ai";
 import { z } from "zod";
 import type { Crumb, HabitEvent } from "./breadcrumb-types";
 
@@ -40,15 +40,15 @@ export const parseCrumb = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
 
     try {
-      const { experimental_output } = await generateText({
+      const { text } = await generateText({
         model: gateway("google/gemini-3-flash-preview"),
         system: PARSE_PROMPT,
         prompt: data.text,
-        experimental_output: Output.object({
-          schema: z.object({ events: z.array(eventSchema) }),
-        }),
       });
-      return experimental_output.events;
+      const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+      const parsed = JSON.parse(cleaned);
+      const arr = Array.isArray(parsed) ? parsed : parsed?.events;
+      return z.array(eventSchema).parse(arr);
     } catch (err) {
       friendlyError(err);
     }
