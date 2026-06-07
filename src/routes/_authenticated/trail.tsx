@@ -82,12 +82,12 @@ function TrailPage() {
           {pending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              following the crumbs...
+              Following the crumbs...
             </>
           ) : (
             <>
               <Wand2 className="mr-2 h-4 w-4" />
-              what does my trail look like?
+              What does my trail look like?
             </>
           )}
         </Button>
