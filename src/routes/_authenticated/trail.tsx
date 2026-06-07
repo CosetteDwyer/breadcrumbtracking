@@ -58,7 +58,7 @@ function TrailPage() {
       const text = await ask({ data: { crumbs: recent } });
       setInsight(text);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "lost in the woods for a moment — try again");
+      toast.error(err instanceof Error ? err.message : "Lost in the woods for a moment — try again");
     } finally {
       setPending(false);
     }
