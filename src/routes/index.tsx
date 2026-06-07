@@ -93,7 +93,7 @@ function WelcomePage() {
               Breadcrumb
             </h1>
             <p className="mt-3 text-base italic text-muted-foreground">
-              leave a trail for your future self
+              Leave a trail for your future self
             </p>
           </div>
 
