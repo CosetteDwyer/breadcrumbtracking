@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Breadcrumb — leave a trail for your future self" },
+      { title: "Breadcrumb — Leave a trail for your future self" },
       {
         name: "description",
         content:
