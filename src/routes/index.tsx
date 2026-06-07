@@ -52,14 +52,14 @@ function WelcomePage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("check your email to finish setting up");
+        toast.success("Check your email to finish setting up");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate({ to: "/journal", replace: true });
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "couldn't sign in — try again");
+      toast.error(err instanceof Error ? err.message : "Couldn't sign in — try again");
     } finally {
       setPending(false);
     }
@@ -72,14 +72,14 @@ function WelcomePage() {
         redirect_uri: window.location.origin,
       });
       if (result.error) {
-        toast.error("couldn't connect to google — try again");
+        toast.error("Couldn't connect to Google — try again");
         setPending(false);
         return;
       }
       if (result.redirected) return;
       navigate({ to: "/journal", replace: true });
     } catch {
-      toast.error("couldn't connect to google — try again");
+      toast.error("Couldn't connect to Google — try again");
       setPending(false);
     }
   }
