@@ -51,7 +51,7 @@ function JournalPage() {
       addCrumb(crumb);
       setText("");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "lost in the woods for a moment — try again");
+      toast.error(err instanceof Error ? err.message : "Lost in the woods for a moment — try again");
     } finally {
       setPending(false);
     }
