@@ -115,7 +115,7 @@ function WelcomePage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs font-normal text-muted-foreground">
-                  password
+                  Password
                 </Label>
                 <Input
                   id="password"
