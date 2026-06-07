@@ -107,7 +107,7 @@ function TrailPage() {
           {days.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border/50 p-10 text-center">
               <p className="text-sm italic text-muted-foreground">
-                the trail is just beginning — keep dropping crumbs
+                The trail is just beginning — keep dropping crumbs
               </p>
             </div>
           ) : (
