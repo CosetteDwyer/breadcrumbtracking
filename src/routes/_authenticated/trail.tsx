@@ -95,7 +95,7 @@ function TrailPage() {
         {insight ? (
           <div className="soft-card ember-glow mt-6 rounded-3xl p-6">
             <h2 className="font-display text-lg text-[color:var(--glow)]">
-              what the forest is telling you
+              What the forest is telling you
             </h2>
             <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
               {insight}
