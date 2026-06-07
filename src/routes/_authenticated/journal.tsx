@@ -61,7 +61,7 @@ function JournalPage() {
     <ForestBackdrop>
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 pt-10">
         <header className="mb-6">
-          <h1 className="font-display text-3xl text-foreground">today</h1>
+          <h1 className="font-display text-3xl text-foreground">Today</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {new Date().toLocaleDateString(undefined, {
               weekday: "long",
