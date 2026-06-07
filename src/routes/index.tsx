@@ -157,7 +157,29 @@ function WelcomePage() {
               className="h-11 w-full rounded-xl border-border/60 bg-background/30 hover:bg-background/60"
             >
               <GoogleMark />
-              continue with google
+            <span className="text-xs text-muted-foreground">or</span>
+              <div className="h-px flex-1 bg-border/50" />
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleGoogle}
+              disabled={pending}
+              className="h-11 w-full rounded-xl border-border/60 bg-background/30 hover:bg-background/60"
+            >
+              <GoogleMark />
+              Continue with Google
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              className="mt-5 block w-full text-center text-xs text-muted-foreground hover:text-foreground"
+            >
+              {mode === "signin"
+                ? "First time here? Create an account"
+                : "Already have an account? Sign in"}
             </Button>
 
             <button
