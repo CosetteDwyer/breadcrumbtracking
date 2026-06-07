@@ -49,7 +49,7 @@ function TrailPage() {
       .map((c) => ({ created_at: c.created_at, events: c.events }));
 
     if (recent.length === 0) {
-      setInsight("the trail is just beginning — keep dropping crumbs");
+      setInsight("The trail is just beginning — keep dropping crumbs");
       return;
     }
 
