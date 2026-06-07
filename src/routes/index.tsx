@@ -136,9 +136,9 @@ function WelcomePage() {
                 {pending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : mode === "signup" ? (
-                  "create your trail"
+                  "Create your trail"
                 ) : (
-                  "step into the woods"
+                  "Step into the woods"
                 )}
               </Button>
             </form>
