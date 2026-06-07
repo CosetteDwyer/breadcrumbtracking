@@ -101,7 +101,7 @@ function WelcomePage() {
             <form onSubmit={handleEmail} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-normal text-muted-foreground">
-                  email
+                  Email
                 </Label>
                 <Input
                   id="email"
