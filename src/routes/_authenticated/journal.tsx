@@ -104,7 +104,7 @@ function JournalPage() {
           {todaysCrumbs.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border/50 p-8 text-center">
               <p className="text-sm italic text-muted-foreground">
-                you haven't dropped any crumbs today
+                You haven't dropped any crumbs today
               </p>
             </div>
           ) : (
