@@ -24,7 +24,7 @@ export function BottomNav() {
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             <NotebookPen className="h-4 w-4" />
-            journal
+            Journal
           </Link>
           <Link
             to="/trail"
@@ -32,7 +32,7 @@ export function BottomNav() {
             activeProps={{ className: "bg-accent text-foreground" }}
           >
             <Footprints className="h-4 w-4" />
-            trail
+            Trail
           </Link>
         </div>
         <button
