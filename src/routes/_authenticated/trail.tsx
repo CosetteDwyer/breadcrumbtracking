@@ -19,8 +19,8 @@ function dayLabel(iso: string) {
   const d = new Date(iso);
   const n = new Date();
   const diff = Math.floor((n.getTime() - d.getTime()) / 86400000);
-  if (diff === 0) return "today";
-  if (diff === 1) return "yesterday";
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
   return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 }
 
