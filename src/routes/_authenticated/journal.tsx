@@ -88,12 +88,12 @@ function JournalPage() {
               {pending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  following the crumbs...
+                  Following the crumbs...
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  drop a crumb
+                  Drop a crumb
                 </>
               )}
             </Button>
