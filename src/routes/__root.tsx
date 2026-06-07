@@ -72,19 +72,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Breadcrumb — leave a trail for your future self" },
+      { title: "BreadcrumbTracking — Leave a trail for your future self" },
       {
         name: "description",
         content:
           "A gentle, non-judgmental habit journal for ADHD brains. Drop crumbs, follow the trail.",
       },
-      { property: "og:title", content: "Breadcrumb" },
+      { property: "og:title", content: "BreadcrumbTracking — Leave a trail for your future self" },
       {
         property: "og:description",
         content: "Leave a trail for your future self.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "BreadcrumbTracking — Leave a trail for your future self" },
+      { name: "description", content: "Breadcrumb is a habit tracker app designed to help users with ADHD log daily activities and gain gentle insights." },
+      { property: "og:description", content: "Breadcrumb is a habit tracker app designed to help users with ADHD log daily activities and gain gentle insights." },
+      { name: "twitter:description", content: "Breadcrumb is a habit tracker app designed to help users with ADHD log daily activities and gain gentle insights." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6fe6a33e-e093-4c9c-ad4b-6508bec6ae96/id-preview-94f3262f--d804964c-5958-416f-84a3-3b140a771574.lovable.app-1780859081893.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6fe6a33e-e093-4c9c-ad4b-6508bec6ae96/id-preview-94f3262f--d804964c-5958-416f-84a3-3b140a771574.lovable.app-1780859081893.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
