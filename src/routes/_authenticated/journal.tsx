@@ -51,7 +51,7 @@ function JournalPage() {
       addCrumb(crumb);
       setText("");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "lost in the woods for a moment — try again");
+      toast.error(err instanceof Error ? err.message : "Lost in the woods for a moment — try again");
     } finally {
       setPending(false);
     }
@@ -61,7 +61,7 @@ function JournalPage() {
     <ForestBackdrop>
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 pt-10">
         <header className="mb-6">
-          <h1 className="font-display text-3xl text-foreground">today</h1>
+          <h1 className="font-display text-3xl text-foreground">Today</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {new Date().toLocaleDateString(undefined, {
               weekday: "long",
@@ -88,12 +88,12 @@ function JournalPage() {
               {pending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  following the crumbs...
+                  Following the crumbs...
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  drop a crumb
+                  Drop a crumb
                 </>
               )}
             </Button>
@@ -104,7 +104,7 @@ function JournalPage() {
           {todaysCrumbs.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border/50 p-8 text-center">
               <p className="text-sm italic text-muted-foreground">
-                you haven't dropped any crumbs today
+                You haven't dropped any crumbs today
               </p>
             </div>
           ) : (

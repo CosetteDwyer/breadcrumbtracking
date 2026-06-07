@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 import type { HabitEvent } from "@/lib/breadcrumb-types";
 
 const STATUS_LABEL: Record<HabitEvent["status"], string> = {
-  done: "done",
-  partial: "a little",
-  unsure: "not sure",
-  missed: "didn't happen",
+  done: "Done",
+  partial: "A little",
+  unsure: "Not sure",
+  missed: "Didn't happen",
 };
 
 const STATUS_STYLES: Record<HabitEvent["status"], string> = {
@@ -16,10 +16,10 @@ const STATUS_STYLES: Record<HabitEvent["status"], string> = {
 };
 
 const TIME_LABEL: Record<HabitEvent["time_of_day"], string> = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-  unknown: "sometime",
+  morning: "Morning",
+  afternoon: "Afternoon",
+  evening: "Evening",
+  unknown: "Sometime",
 };
 
 export function CrumbCard({ event }: { event: HabitEvent }) {

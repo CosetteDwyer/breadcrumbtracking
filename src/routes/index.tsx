@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Breadcrumb — leave a trail for your future self" },
+      { title: "Breadcrumb — Leave a trail for your future self" },
       {
         name: "description",
         content:
@@ -52,14 +52,14 @@ function WelcomePage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("check your email to finish setting up");
+        toast.success("Check your email to finish setting up");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate({ to: "/journal", replace: true });
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "couldn't sign in — try again");
+      toast.error(err instanceof Error ? err.message : "Couldn't sign in — try again");
     } finally {
       setPending(false);
     }
@@ -72,14 +72,14 @@ function WelcomePage() {
         redirect_uri: window.location.origin,
       });
       if (result.error) {
-        toast.error("couldn't connect to google — try again");
+        toast.error("Couldn't connect to Google — try again");
         setPending(false);
         return;
       }
       if (result.redirected) return;
       navigate({ to: "/journal", replace: true });
     } catch {
-      toast.error("couldn't connect to google — try again");
+      toast.error("Couldn't connect to Google — try again");
       setPending(false);
     }
   }
@@ -93,7 +93,7 @@ function WelcomePage() {
               Breadcrumb
             </h1>
             <p className="mt-3 text-base italic text-muted-foreground">
-              leave a trail for your future self
+              Leave a trail for your future self
             </p>
           </div>
 
@@ -101,7 +101,7 @@ function WelcomePage() {
             <form onSubmit={handleEmail} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-normal text-muted-foreground">
-                  email
+                  Email
                 </Label>
                 <Input
                   id="email"
@@ -115,7 +115,7 @@ function WelcomePage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="password" className="text-xs font-normal text-muted-foreground">
-                  password
+                  Password
                 </Label>
                 <Input
                   id="password"
@@ -136,9 +136,9 @@ function WelcomePage() {
                 {pending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : mode === "signup" ? (
-                  "create your trail"
+                  "Create your trail"
                 ) : (
-                  "step into the woods"
+                  "Step into the woods"
                 )}
               </Button>
             </form>
@@ -157,7 +157,7 @@ function WelcomePage() {
               className="h-11 w-full rounded-xl border-border/60 bg-background/30 hover:bg-background/60"
             >
               <GoogleMark />
-              continue with google
+              Continue with Google
             </Button>
 
             <button
@@ -166,8 +166,8 @@ function WelcomePage() {
               className="mt-5 block w-full text-center text-xs text-muted-foreground hover:text-foreground"
             >
               {mode === "signin"
-                ? "first time here? create an account"
-                : "already have an account? sign in"}
+                ? "First time here? Create an account"
+                : "Already have an account? Sign in"}
             </button>
           </div>
 

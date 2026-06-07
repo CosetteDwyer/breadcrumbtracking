@@ -19,8 +19,8 @@ function dayLabel(iso: string) {
   const d = new Date(iso);
   const n = new Date();
   const diff = Math.floor((n.getTime() - d.getTime()) / 86400000);
-  if (diff === 0) return "today";
-  if (diff === 1) return "yesterday";
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Yesterday";
   return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 }
 
@@ -49,7 +49,7 @@ function TrailPage() {
       .map((c) => ({ created_at: c.created_at, events: c.events }));
 
     if (recent.length === 0) {
-      setInsight("the trail is just beginning — keep dropping crumbs");
+      setInsight("The trail is just beginning — keep dropping crumbs");
       return;
     }
 
@@ -58,7 +58,7 @@ function TrailPage() {
       const text = await ask({ data: { crumbs: recent } });
       setInsight(text);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "lost in the woods for a moment — try again");
+      toast.error(err instanceof Error ? err.message : "Lost in the woods for a moment — try again");
     } finally {
       setPending(false);
     }
@@ -68,9 +68,9 @@ function TrailPage() {
     <ForestBackdrop>
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 pt-10">
         <header className="mb-6">
-          <h1 className="font-display text-3xl text-foreground">the trail</h1>
+          <h1 className="font-display text-3xl text-foreground">The trail</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            every crumb you've dropped so far
+            Every crumb you've dropped so far
           </p>
         </header>
 
@@ -82,12 +82,12 @@ function TrailPage() {
           {pending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              following the crumbs...
+              Following the crumbs...
             </>
           ) : (
             <>
               <Wand2 className="mr-2 h-4 w-4" />
-              what does my trail look like?
+              What does my trail look like?
             </>
           )}
         </Button>
@@ -95,7 +95,7 @@ function TrailPage() {
         {insight ? (
           <div className="soft-card ember-glow mt-6 rounded-3xl p-6">
             <h2 className="font-display text-lg text-[color:var(--glow)]">
-              what the forest is telling you
+              What the forest is telling you
             </h2>
             <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
               {insight}
@@ -107,7 +107,7 @@ function TrailPage() {
           {days.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border/50 p-10 text-center">
               <p className="text-sm italic text-muted-foreground">
-                the trail is just beginning — keep dropping crumbs
+                The trail is just beginning — keep dropping crumbs
               </p>
             </div>
           ) : (
