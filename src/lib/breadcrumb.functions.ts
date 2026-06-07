@@ -21,12 +21,12 @@ const parseInput = z.object({ text: z.string().min(1).max(8000) });
 function friendlyError(err: unknown): never {
   const msg = err instanceof Error ? err.message : String(err);
   if (msg.includes("429")) {
-    throw new Error("the forest is busy right now — try again in a moment");
+    throw new Error("The forest is busy right now — try again in a moment");
   }
   if (msg.includes("402")) {
-    throw new Error("the trail needs more credits to continue — add some in workspace settings");
+    throw new Error("The trail needs more credits to continue — add some in workspace settings");
   }
-  throw new Error("lost in the woods for a moment — try again");
+  throw new Error("Lost in the woods for a moment — try again");
 }
 
 export const parseCrumb = createServerFn({ method: "POST" })
