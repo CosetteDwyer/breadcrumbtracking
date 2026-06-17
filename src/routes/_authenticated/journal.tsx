@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { Crumb } from "@/lib/breadcrumb-types";
+import { useDisplayName } from "@/hooks/use-settings";
 
 export const Route = createFileRoute("/_authenticated/journal")({
   head: () => ({ meta: [{ title: "Journal — Breadcrumb" }] }),
@@ -30,6 +31,7 @@ function isToday(iso: string) {
 function JournalPage() {
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { crumbs, addCrumb } = useCrumbs(user.id);
+  const { name } = useDisplayName();
   const [text, setText] = useState("");
   const [pending, setPending] = useState(false);
   const parse = useServerFn(parseCrumb);
@@ -57,11 +59,20 @@ function JournalPage() {
     }
   }
 
+  const hour = new Date().getHours();
+  const greeting = name
+    ? hour < 12
+      ? `Morning, ${name} — what's the trail looking like today?`
+      : hour < 18
+        ? `Welcome back, ${name}`
+        : `Evening, ${name} — drop a crumb before the light fades`
+    : "Today";
+
   return (
     <ForestBackdrop>
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 pt-10">
         <header className="mb-6">
-          <h1 className="font-display text-3xl text-foreground">Today</h1>
+          <h1 className="font-display text-3xl text-foreground">{greeting}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {new Date().toLocaleDateString(undefined, {
               weekday: "long",
