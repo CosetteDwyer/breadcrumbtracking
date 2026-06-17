@@ -1,5 +1,8 @@
+import { CloudFog } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { HabitEvent } from "@/lib/breadcrumb-types";
+
+const LOW_CONFIDENCE_THRESHOLD = 50;
 
 const STATUS_LABEL: Record<HabitEvent["status"], string> = {
   done: "Done",
@@ -23,13 +26,24 @@ const TIME_LABEL: Record<HabitEvent["time_of_day"], string> = {
 };
 
 export function CrumbCard({ event }: { event: HabitEvent }) {
+  const isLowConfidence = event.confidence < LOW_CONFIDENCE_THRESHOLD;
   return (
-    <div className="soft-card rounded-2xl p-4">
+    <div
+      className={cn(
+        "soft-card rounded-2xl p-4 transition-opacity",
+        isLowConfidence && "opacity-70",
+      )}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-display text-lg leading-snug text-foreground">{event.habit}</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {TIME_LABEL[event.time_of_day]} · {event.confidence}% sure
+          <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+            {isLowConfidence ? (
+              <CloudFog className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            ) : null}
+            <span>
+              {TIME_LABEL[event.time_of_day]} · {event.confidence}% sure
+            </span>
           </p>
         </div>
         <span
