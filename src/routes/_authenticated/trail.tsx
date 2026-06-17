@@ -25,7 +25,54 @@ function dayLabel(iso: string) {
   return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 }
 
-function TrailPage() {
+function weekRecapText(events: HabitEvent[], uniqueDays: number) {
+  if (events.length === 0) {
+    return "Not enough crumbs yet to look back on — give it a few more days.";
+  }
+
+  const timeCounts: Record<HabitEvent["time_of_day"], number> = {
+    morning: 0,
+    afternoon: 0,
+    evening: 0,
+    unknown: 0,
+  };
+  for (const ev of events) {
+    timeCounts[ev.time_of_day]++;
+  }
+
+  const timeParts = [
+    timeCounts.morning > 0 ? `${timeCounts.morning} morning${timeCounts.morning === 1 ? "" : "s"}` : null,
+    timeCounts.afternoon > 0 ? `${timeCounts.afternoon} afternoon${timeCounts.afternoon === 1 ? "" : "s"}` : null,
+    timeCounts.evening > 0 ? `${timeCounts.evening} evening${timeCounts.evening === 1 ? "" : "s"}` : null,
+  ].filter(Boolean);
+
+  const crumbWord = events.length === 1 ? "crumb" : "crumbs";
+  const dayWord = uniqueDays === 1 ? "day" : "days";
+
+  if (timeParts.length > 0) {
+    return `You dropped ${events.length} ${crumbWord} across ${uniqueDays} ${dayWord} this week — ${timeParts.join(", ")}. A good stretch of trail-leaving.`;
+  }
+
+  return `You dropped ${events.length} ${crumbWord} across ${uniqueDays} ${dayWord} this week. A good stretch of trail-leaving.`;
+}
+
+function WeekRecap({ events, uniqueDays }: { events: HabitEvent[]; uniqueDays: number }) {
+  return (
+    <div className="soft-card rounded-2xl p-5">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ember)]/10">
+          <Leaf className="h-4 w-4 text-[color:var(--glow)]" />
+        </div>
+        <div>
+          <h2 className="font-display text-base text-[color:var(--glow)]">This week on the trail</h2>
+          <p className="mt-1 text-sm leading-relaxed text-foreground/80">
+            {weekRecapText(events, uniqueDays)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { crumbs } = useCrumbs(user.id);
   const [insight, setInsight] = useState<string | null>(null);
