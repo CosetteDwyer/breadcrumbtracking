@@ -1,5 +1,5 @@
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { readTrail } from "@/lib/breadcrumb.functions";
 import { useCrumbs } from "@/hooks/use-crumbs";
@@ -7,8 +7,9 @@ import { ForestBackdrop } from "@/components/ForestBackdrop";
 import { BottomNav } from "@/components/BottomNav";
 import { CrumbCard } from "@/components/CrumbCard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2 } from "lucide-react";
+import { Loader2, Wand2, Leaf } from "lucide-react";
 import { toast } from "sonner";
+import type { HabitEvent } from "@/lib/breadcrumb-types";
 
 export const Route = createFileRoute("/_authenticated/trail")({
   head: () => ({ meta: [{ title: "Trail — Breadcrumb" }] }),
