@@ -28,11 +28,12 @@ const TIME_LABEL: Record<HabitEvent["time_of_day"], string> = {
 export function CrumbCard({ event }: { event: HabitEvent }) {
   const isLowConfidence = event.confidence < LOW_CONFIDENCE_THRESHOLD;
   return (
-    <div
+  <div
       className={cn(
-        "soft-card rounded-2xl p-4 transition-opacity",
-        isLowConfidence && "opacity-70",
+        "soft-card p-4 transition-opacity",
+        isLowConfidence && "opacity-70 border-dashed border-[color:var(--moss)]/25",
       )}
+      style={isLowConfidence ? { borderRadius: "45% 55% 50% 40% / 55% 45% 50% 55%" } : undefined}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
