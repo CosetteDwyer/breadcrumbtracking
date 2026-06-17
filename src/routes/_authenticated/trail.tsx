@@ -1,5 +1,5 @@
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { readTrail } from "@/lib/breadcrumb.functions";
 import { useCrumbs } from "@/hooks/use-crumbs";
@@ -7,8 +7,9 @@ import { ForestBackdrop } from "@/components/ForestBackdrop";
 import { BottomNav } from "@/components/BottomNav";
 import { CrumbCard } from "@/components/CrumbCard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2 } from "lucide-react";
+import { Loader2, Wand2, Leaf } from "lucide-react";
 import { toast } from "sonner";
+import type { HabitEvent } from "@/lib/breadcrumb-types";
 
 export const Route = createFileRoute("/_authenticated/trail")({
   head: () => ({ meta: [{ title: "Trail — Breadcrumb" }] }),
@@ -24,12 +25,69 @@ function dayLabel(iso: string) {
   return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 }
 
+function weekRecapText(events: HabitEvent[], uniqueDays: number) {
+  if (events.length === 0) {
+    return "Not enough crumbs yet to look back on — give it a few more days.";
+  }
+
+  const timeCounts: Record<HabitEvent["time_of_day"], number> = {
+    morning: 0,
+    afternoon: 0,
+    evening: 0,
+    unknown: 0,
+  };
+  for (const ev of events) {
+    timeCounts[ev.time_of_day]++;
+  }
+
+  const timeParts = [
+    timeCounts.morning > 0 ? `${timeCounts.morning} morning${timeCounts.morning === 1 ? "" : "s"}` : null,
+    timeCounts.afternoon > 0 ? `${timeCounts.afternoon} afternoon${timeCounts.afternoon === 1 ? "" : "s"}` : null,
+    timeCounts.evening > 0 ? `${timeCounts.evening} evening${timeCounts.evening === 1 ? "" : "s"}` : null,
+  ].filter(Boolean);
+
+  const crumbWord = events.length === 1 ? "crumb" : "crumbs";
+  const dayWord = uniqueDays === 1 ? "day" : "days";
+
+  if (timeParts.length > 0) {
+    return `You dropped ${events.length} ${crumbWord} across ${uniqueDays} ${dayWord} this week — ${timeParts.join(", ")}. A good stretch of trail-leaving.`;
+  }
+
+  return `You dropped ${events.length} ${crumbWord} across ${uniqueDays} ${dayWord} this week. A good stretch of trail-leaving.`;
+}
+
+function WeekRecap({ events, uniqueDays }: { events: HabitEvent[]; uniqueDays: number }) {
+  return (
+    <div className="soft-card rounded-2xl p-5">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--ember)]/10">
+          <Leaf className="h-4 w-4 text-[color:var(--glow)]" />
+        </div>
+        <div>
+          <h2 className="font-display text-base text-[color:var(--glow)]">This week on the trail</h2>
+          <p className="mt-1 text-sm leading-relaxed text-foreground/80">
+            {weekRecapText(events, uniqueDays)}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 function TrailPage() {
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { crumbs } = useCrumbs(user.id);
   const [insight, setInsight] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const ask = useServerFn(readTrail);
+
+  // Past 7 days recap
+  const weekEvents = useMemo(() => {
+    const cutoff = Date.now() - 7 * 86400000;
+    const recent = crumbs.filter((c) => new Date(c.created_at).getTime() >= cutoff);
+    const events = recent.flatMap((c) => c.events);
+    const uniqueDays = new Set(recent.map((c) => new Date(c.created_at).toDateString())).size;
+    return { events, uniqueDays };
+  }, [crumbs]);
 
   // group by day
   const byDay = crumbs.reduce<Record<string, typeof crumbs>>((acc, c) => {
@@ -73,6 +131,8 @@ function TrailPage() {
             Every crumb you've dropped so far
           </p>
         </header>
+
+        <WeekRecap events={weekEvents.events} uniqueDays={weekEvents.uniqueDays} />
 
         <Button
           onClick={checkTrail}
