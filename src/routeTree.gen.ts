@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTrailRouteImport } from './routes/_authenticated/trail'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedJournalRouteImport } from './routes/_authenticated/journal'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -28,6 +29,11 @@ const AuthenticatedTrailRoute = AuthenticatedTrailRouteImport.update({
   path: '/trail',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedJournalRoute = AuthenticatedJournalRouteImport.update({
   id: '/journal',
   path: '/journal',
@@ -37,11 +43,13 @@ const AuthenticatedJournalRoute = AuthenticatedJournalRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/journal': typeof AuthenticatedJournalRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/trail': typeof AuthenticatedTrailRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/journal': typeof AuthenticatedJournalRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/trail': typeof AuthenticatedTrailRoute
 }
 export interface FileRoutesById {
@@ -49,18 +57,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/journal': typeof AuthenticatedJournalRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/trail': typeof AuthenticatedTrailRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/journal' | '/trail'
+  fullPaths: '/' | '/journal' | '/settings' | '/trail'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/journal' | '/trail'
+  to: '/' | '/journal' | '/settings' | '/trail'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/_authenticated/journal'
+    | '/_authenticated/settings'
     | '/_authenticated/trail'
   fileRoutesById: FileRoutesById
 }
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrailRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/journal': {
       id: '/_authenticated/journal'
       path: '/journal'
@@ -104,11 +121,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedJournalRoute: typeof AuthenticatedJournalRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTrailRoute: typeof AuthenticatedTrailRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJournalRoute: AuthenticatedJournalRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTrailRoute: AuthenticatedTrailRoute,
 }
 
@@ -122,13 +141,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

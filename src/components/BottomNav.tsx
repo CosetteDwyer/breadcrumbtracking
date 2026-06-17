@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { NotebookPen, Footprints, LogOut } from "lucide-react";
+import { NotebookPen, Footprints, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -33,6 +33,14 @@ export function BottomNav() {
           >
             <Footprints className="h-4 w-4" />
             Trail
+          </Link>
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors data-[status=active]:bg-accent data-[status=active]:text-foreground"
+            activeProps={{ className: "bg-accent text-foreground" }}
+          >
+            <SettingsIcon className="h-4 w-4" />
+            Settings
           </Link>
         </div>
         <button
