@@ -132,6 +132,8 @@ function TrailPage() {
           </p>
         </header>
 
+        <WeekRecap events={weekEvents.events} uniqueDays={weekEvents.uniqueDays} />
+
         <Button
           onClick={checkTrail}
           disabled={pending}
