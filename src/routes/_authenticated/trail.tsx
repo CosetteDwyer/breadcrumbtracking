@@ -73,6 +73,7 @@ function WeekRecap({ events, uniqueDays }: { events: HabitEvent[]; uniqueDays: n
     </div>
   );
 }
+function TrailPage() {
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { crumbs } = useCrumbs(user.id);
   const [insight, setInsight] = useState<string | null>(null);
