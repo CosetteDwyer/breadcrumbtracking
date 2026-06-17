@@ -80,6 +80,15 @@ function TrailPage() {
   const [pending, setPending] = useState(false);
   const ask = useServerFn(readTrail);
 
+  // Past 7 days recap
+  const weekEvents = useMemo(() => {
+    const cutoff = Date.now() - 7 * 86400000;
+    const recent = crumbs.filter((c) => new Date(c.created_at).getTime() >= cutoff);
+    const events = recent.flatMap((c) => c.events);
+    const uniqueDays = new Set(recent.map((c) => new Date(c.created_at).toDateString())).size;
+    return { events, uniqueDays };
+  }, [crumbs]);
+
   // group by day
   const byDay = crumbs.reduce<Record<string, typeof crumbs>>((acc, c) => {
     const key = new Date(c.created_at).toDateString();
