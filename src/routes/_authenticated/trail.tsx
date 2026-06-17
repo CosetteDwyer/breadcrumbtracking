@@ -7,9 +7,10 @@ import { ForestBackdrop } from "@/components/ForestBackdrop";
 import { BottomNav } from "@/components/BottomNav";
 import { CrumbCard } from "@/components/CrumbCard";
 import { Button } from "@/components/ui/button";
-import { Loader2, Wand2, Leaf } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Loader2, Wand2, Leaf, Search, X } from "lucide-react";
 import { toast } from "sonner";
-import type { HabitEvent } from "@/lib/breadcrumb-types";
+import type { Crumb, HabitEvent } from "@/lib/breadcrumb-types";
 
 export const Route = createFileRoute("/_authenticated/trail")({
   head: () => ({ meta: [{ title: "Trail — Breadcrumb" }] }),
@@ -41,9 +42,15 @@ function weekRecapText(events: HabitEvent[], uniqueDays: number) {
   }
 
   const timeParts = [
-    timeCounts.morning > 0 ? `${timeCounts.morning} morning${timeCounts.morning === 1 ? "" : "s"}` : null,
-    timeCounts.afternoon > 0 ? `${timeCounts.afternoon} afternoon${timeCounts.afternoon === 1 ? "" : "s"}` : null,
-    timeCounts.evening > 0 ? `${timeCounts.evening} evening${timeCounts.evening === 1 ? "" : "s"}` : null,
+    timeCounts.morning > 0
+      ? `${timeCounts.morning} morning${timeCounts.morning === 1 ? "" : "s"}`
+      : null,
+    timeCounts.afternoon > 0
+      ? `${timeCounts.afternoon} afternoon${timeCounts.afternoon === 1 ? "" : "s"}`
+      : null,
+    timeCounts.evening > 0
+      ? `${timeCounts.evening} evening${timeCounts.evening === 1 ? "" : "s"}`
+      : null,
   ].filter(Boolean);
 
   const crumbWord = events.length === 1 ? "crumb" : "crumbs";
@@ -64,7 +71,9 @@ function WeekRecap({ events, uniqueDays }: { events: HabitEvent[]; uniqueDays: n
           <Leaf className="h-4 w-4 text-[color:var(--glow)]" />
         </div>
         <div>
-          <h2 className="font-display text-base text-[color:var(--glow)]">This week on the trail</h2>
+          <h2 className="font-display text-base text-[color:var(--glow)]">
+            This week on the trail
+          </h2>
           <p className="mt-1 text-sm leading-relaxed text-foreground/80">
             {weekRecapText(events, uniqueDays)}
           </p>
@@ -73,12 +82,24 @@ function WeekRecap({ events, uniqueDays }: { events: HabitEvent[]; uniqueDays: n
     </div>
   );
 }
+function matchesQuery(crumb: Crumb, event: HabitEvent, query: string) {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return (
+    event.habit.toLowerCase().includes(q) ||
+    event.notes.toLowerCase().includes(q) ||
+    crumb.raw_text.toLowerCase().includes(q)
+  );
+}
+
 function TrailPage() {
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { crumbs } = useCrumbs(user.id);
   const [insight, setInsight] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [query, setQuery] = useState("");
   const ask = useServerFn(readTrail);
+  const isSearching = query.trim().length > 0;
 
   // Past 7 days recap
   const weekEvents = useMemo(() => {
@@ -89,14 +110,25 @@ function TrailPage() {
     return { events, uniqueDays };
   }, [crumbs]);
 
-  // group by day
-  const byDay = crumbs.reduce<Record<string, typeof crumbs>>((acc, c) => {
-    const key = new Date(c.created_at).toDateString();
-    (acc[key] ||= []).push(c);
-    return acc;
-  }, {});
+  // group by day, filtering down to matching events when searching
+  const byDay = crumbs.reduce<Record<string, { crumb: Crumb; events: HabitEvent[] }[]>>(
+    (acc, c) => {
+      const matchingEvents = isSearching
+        ? c.events.filter((ev) => matchesQuery(c, ev, query))
+        : c.events;
+      if (matchingEvents.length === 0) return acc;
+      const key = new Date(c.created_at).toDateString();
+      (acc[key] ||= []).push({ crumb: c, events: matchingEvents });
+      return acc;
+    },
+    {},
+  );
   const days = Object.entries(byDay).sort(
     ([a], [b]) => new Date(b).getTime() - new Date(a).getTime(),
+  );
+  const totalMatches = days.reduce(
+    (sum, [, entries]) => sum + entries.reduce((s, e) => s + e.events.length, 0),
+    0,
   );
 
   async function checkTrail() {
@@ -116,7 +148,9 @@ function TrailPage() {
       const text = await ask({ data: { crumbs: recent } });
       setInsight(text);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Lost in the woods for a moment — try again");
+      toast.error(
+        err instanceof Error ? err.message : "Lost in the woods for a moment — try again",
+      );
     } finally {
       setPending(false);
     }
@@ -127,32 +161,62 @@ function TrailPage() {
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 pt-10">
         <header className="mb-6">
           <h1 className="font-display text-3xl text-foreground">The trail</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Every crumb you've dropped so far
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">Every crumb you've dropped so far</p>
         </header>
 
-        <WeekRecap events={weekEvents.events} uniqueDays={weekEvents.uniqueDays} />
+        <div className="relative mb-6">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search your crumbs… try “breakfast”"
+            className="rounded-full pl-9 pr-9"
+          />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
 
-        <Button
-          onClick={checkTrail}
-          disabled={pending}
-          className="h-11 rounded-full bg-primary text-primary-foreground hover:opacity-90"
-        >
-          {pending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Following the crumbs...
-            </>
-          ) : (
-            <>
-              <Wand2 className="mr-2 h-4 w-4" />
-              What does my trail look like?
-            </>
-          )}
-        </Button>
+        {isSearching ? (
+          <p className="-mt-4 mb-4 text-xs text-muted-foreground">
+            {totalMatches === 0
+              ? `No crumbs match "${query.trim()}"`
+              : `${totalMatches} crumb${totalMatches === 1 ? "" : "s"} match "${query.trim()}"`}
+          </p>
+        ) : null}
 
-        {insight ? (
+        {!isSearching ? (
+          <WeekRecap events={weekEvents.events} uniqueDays={weekEvents.uniqueDays} />
+        ) : null}
+
+        {!isSearching ? (
+          <Button
+            onClick={checkTrail}
+            disabled={pending}
+            className="h-11 rounded-full bg-primary text-primary-foreground hover:opacity-90"
+          >
+            {pending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Following the crumbs...
+              </>
+            ) : (
+              <>
+                <Wand2 className="mr-2 h-4 w-4" />
+                What does my trail look like?
+              </>
+            )}
+          </Button>
+        ) : null}
+
+        {!isSearching && insight ? (
           <div className="soft-card ember-glow mt-6 rounded-3xl p-6">
             <h2 className="font-display text-lg text-[color:var(--glow)]">
               What the forest is telling you
@@ -167,19 +231,21 @@ function TrailPage() {
           {days.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border/50 p-10 text-center">
               <p className="text-sm italic text-muted-foreground">
-                The trail is just beginning — keep dropping crumbs
+                {isSearching
+                  ? "No crumbs match that search — try a different word"
+                  : "The trail is just beginning — keep dropping crumbs"}
               </p>
             </div>
           ) : (
-            days.map(([day, dayCrumbs]) => (
+            days.map(([day, dayEntries]) => (
               <div key={day}>
                 <h3 className="mb-3 flex items-center gap-3 text-xs uppercase tracking-wider text-muted-foreground">
-                  <span>{dayLabel(dayCrumbs[0].created_at)}</span>
+                  <span>{dayLabel(dayEntries[0].crumb.created_at)}</span>
                   <span className="h-px flex-1 bg-border/40" />
                 </h3>
                 <div className="space-y-3">
-                  {dayCrumbs.flatMap((c) =>
-                    c.events.map((ev, i) => <CrumbCard key={`${c.id}-${i}`} event={ev} />),
+                  {dayEntries.flatMap(({ crumb, events }) =>
+                    events.map((ev, i) => <CrumbCard key={`${crumb.id}-${i}`} event={ev} />),
                   )}
                 </div>
               </div>
